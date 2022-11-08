@@ -1,6 +1,22 @@
-# Requisito 1
+import requests
+import logging
+from time import sleep
+
+
+SETTING_USER_AGENT = {"user-agent": "Fake user-agent"}
+
+
+logger = logging.getLogger(__name__)
+
+
 def fetch(url):
-    """Seu código deve vir aqui"""
+    sleep(1)
+    try:
+        response = requests.get(url, headers=SETTING_USER_AGENT, timeout=3)
+        return response.text if response.status_code == 200 else None
+    except requests.ReadTimeout as e:
+        logger.error(f"Timeout error: {e}")
+        return None
 
 
 # Requisito 2
