@@ -4,6 +4,8 @@ from time import sleep
 import requests
 from parsel import Selector
 
+from tech_news.database import create_news
+
 SETTING_USER_AGENT = {"user-agent": "Fake user-agent"}
 
 
@@ -14,9 +16,10 @@ def fetch(url):
     sleep(1)
     try:
         response = requests.get(url, headers=SETTING_USER_AGENT, timeout=3)
-        return response.text if response.status_code == 200 else None
-    except requests.ReadTimeout as e:
-        logger.error(f"Timeout error: {e}")
+        response.raise_for_status()
+        return response.text
+    except (requests.HTTPError, requests.ReadTimeout) as e:
+        logger.error(f"Error: {e}")
         return None
 
 
@@ -61,6 +64,21 @@ def scrape_noticia(html_content):
     }
 
 
-# Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    all_news = []
+    last_news = []
+    url = "https://blog.betrybe.com/"
+    while len(all_news) < amount:
+        news = scrape_novidades(fetch(url))
+        all_news.extend(news)
+        next_page_link = scrape_next_page_link(fetch(url))
+        url = next_page_link
+
+    for url_new in all_news[:amount]:
+        last_news.append(scrape_noticia(fetch(url_new)))
+    create_news(last_news)
+    return last_news
+
+
+if __name__ == "__main__":
+    print(get_tech_news(2))
