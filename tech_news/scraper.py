@@ -1,8 +1,8 @@
-import requests
 import logging
-from parsel import Selector
 from time import sleep
 
+import requests
+from parsel import Selector
 
 SETTING_USER_AGENT = {"user-agent": "Fake user-agent"}
 
@@ -29,9 +29,10 @@ def scrape_novidades(html_content):
     return news
 
 
-# Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    next_page_link = selector.css("a.next.page-numbers::attr(href)").get()
+    return next_page_link
 
 
 # Requisito 4
@@ -48,3 +49,4 @@ if __name__ == "__main__":
     url = "https://blog.betrybe.com/"
     html_content = fetch(url)
     print(scrape_novidades(html_content))
+    print(scrape_next_page_link(html_content))
