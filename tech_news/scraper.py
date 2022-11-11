@@ -78,7 +78,3 @@ def get_tech_news(amount):
         last_news.append(scrape_noticia(fetch(url_new)))
     create_news(last_news)
     return last_news
-
-
-if __name__ == "__main__":
-    print(get_tech_news(2))

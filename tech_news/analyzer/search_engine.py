@@ -1,18 +1,30 @@
-# Requisito 6
+from tech_news.database import search_news
+from datetime import datetime
+
+
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    query = {"title": {"$regex": title, "$options": "i"}}
+    response = search_news(query)
+    return [(item["title"], item["url"]) for item in response]
 
 
-# Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    try:
+        formated_data = datetime.strptime(date, "%Y-%m-%d")
+        query = {"timestamp": {"$regex": formated_data.strftime("%d/%m/%Y")}}
+    except ValueError:
+        raise ValueError("Data inválida.")
+    response = search_news(query)
+    return [(item["title"], item["url"]) for item in response]
 
 
-# Requisito 8
 def search_by_tag(tag):
-    """Seu código deve vir aqui"""
+    query = {"tags": {"$regex": tag, "$options": "i"}}
+    response = search_news(query)
+    return [(item["title"], item["url"]) for item in response]
 
 
-# Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    query = {"category": {"$regex": category, "$options": "i"}}
+    response = search_news(query)
+    return [(item["title"], item["url"]) for item in response]
